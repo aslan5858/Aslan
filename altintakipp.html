@@ -1,0 +1,547 @@
+<!doctype html>
+<html lang="tr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+    <title>Altın Takip - Tek Sayfa</title>
+    <style>
+      :root {
+        --bg: #0f1724;
+        --card: #0b1220;
+        --accent: #f59e0b;
+        --muted: #a8b3c3;
+        --glass: rgba(255, 255, 255, 0.03)
+      }
+
+      * {
+        box-sizing: border-box;
+        font-family: Inter, system-ui, Segoe UI, Roboto, 'Helvetica Neue', Arial
+      }
+
+      html,
+      body {
+        height: 100%;
+        margin: 0;
+        background:linear-gradient(180deg, #071129 0%, #081728 100%);
+        color: #e6eef8
+      }
+
+      .wrap {
+        max-width: 1100px;
+        margin: 28px auto;
+        padding: 20px;
+        display: grid;
+        grid-template-columns: 420px 1fr;
+        gap: 18px
+      }
+
+      .panel {
+        background: var(--card);
+        padding: 18px;
+        border-radius: 12px;
+        box-shadow: 0 6px 20px rgba(2, 6, 23, 0.6)
+      }
+
+      .left .big-input {
+        width: 100%;
+        font-size: 28px;
+        padding: 14px;
+        border-radius: 10px;
+        border: 1px solid rgba(255, 255, 255, 0.04);
+        background: var(--glass);
+        color: inherit
+      }
+
+      label {
+        display: block;
+        margin-top: 12px;
+        font-size: 14px;
+        color: var(--muted)
+      }
+
+      .small-input {
+        width: 100%;
+        padding: 10px;
+        border-radius: 8px;
+        margin-top: 6px;
+        border: 1px solid rgba(255, 255, 255, 0.04);
+        background: transparent;
+        color: inherit
+      }
+
+      .pay-row {
+        display: flex;
+        gap: 10px;
+        margin-top: 12px
+      }
+
+      .pay-btn {
+        flex: 1;
+        padding: 10px;
+        border-radius: 8px;
+        border: 1px solid rgba(255, 255, 255, 0.06);
+        cursor: pointer;
+        background: transparent
+      }
+
+      .pay-btn.active {
+        background: var(--accent);
+        color: #ffffff;
+        font-weight: 600
+      }
+
+      .actions {
+        display: flex;
+        gap: 10px;
+        margin-top: 16px
+      }
+
+      .btn {
+        padding: 10px 14px;
+        border-radius: 8px;
+        border: 0;
+        cursor: pointer
+      }
+
+     .btn.primary {
+  background: var(--accent);
+  color: #ffffff;
+  font-weight: 700;
+}
+
+
+      .btn.ghost {
+        background: transparent;
+        border: 1px solid rgba(255, 255, 255, 0.06);
+        color: var(--muted)
+      }
+
+      .right {
+        display: flex;
+        flex-direction: column;
+        gap: 12px
+      }
+
+      .entry-card {
+        background: linear-gradient(180deg, rgba(255, 255, 255, 0.02), rgba(255, 255, 255, 0.01));
+        padding: 12px;
+        border-radius: 10px;
+        border: 1px solid rgba(255, 255, 255, 0.02)
+      }
+
+      .entry-card.pending {
+        background-color: rgba(255, 0, 0, 0.1);
+        border: 1px solid rgba(255, 0, 0, 0.3);
+      }
+
+      .grid-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 8px
+      }
+
+      .field {
+        font-size: 13px;
+        color: var(--muted)
+      }
+
+      .field strong {
+        display: block;
+        color: #e9f2ff;
+        font-size: 15px;
+        margin-top: 4px
+      }
+
+      .small-table {
+        display: flex;
+        flex-direction: column;
+        gap: 8px
+      }
+
+      .controls {
+        display: flex;
+        gap: 8px;
+        align-items: center;
+        margin-top: 8px
+      }
+
+      .spaced {
+        margin-top: 8px
+      }
+
+      .strike {
+        text-decoration: line-through;
+        opacity: 0.6
+      }
+
+      .meta {
+        font-size: 12px;
+        color: var(--muted)
+      }
+
+      .footer {
+        margin-top: 10px;
+        font-size: 13px;
+        color: var(--muted)
+      }
+
+      @media(max-width:880px) {
+        .wrap {
+          grid-template-columns: 1fr;
+          padding: 12px
+        }
+      }
+
+      .pay-btn {
+        color: white;
+      }
+:focus {
+  outline: 3px solid white; /* Örneğin sarı tonunda */
+  outline-offset: 2px;
+}
+
+label[for="price"] {
+  margin-bottom: 8px;
+}
+
+
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <div class="panel left">
+        <h2>İşlem Kayıt</h2><label for="price">Tutar (Örn: 57000)</label><input id="price" class="big-input" type="number" inputmode="numeric" placeholder="Tutar Girin" /><label for="operation">İşlem (Örn: 10 Gram)</label><input id="operation" class="small-input" type="text" placeholder="Yaptığın işlemi yaz.." /><label>Ödeme Tipi</label>
+        <div class="pay-row"><button id="nakitBtn" class="pay-btn active">Nakit</button><button id="havaleBtn" class="pay-btn">Havale</button></div><label>İşlem Tipi</label>
+        <div class="pay-row"><button id="alisBtn" class="pay-btn active">Alış</button><button id="satisBtn" class="pay-btn">Satış</button></div>
+        <div class="actions"><button id="previewBtn" class="btn primary">Görüntüle</button><button id="exportBtn" class="btn ghost">Dosyaya indir (.json)</button></div>
+        <div class="footer">
+          <div style="margin-top:8px">Kayıtlar tarayıcıda saklanır (localStorage). İsterseniz dosyaya indirerek yedekleyebilirsiniz.</div>
+        </div>
+      </div>
+      <div class="panel right">
+        <h3>Onay Bekleyen / Kayıtlı İşlemler</h3>
+        <div id="previewArea" class="entry-card" style="display:none">
+          <div class="field">İşlem : <strong id="pv-operation">-</strong></div>
+          <div class="field">Tutar : <strong id="pv-price">-</strong></div>
+          <div class="field">Ödeme Tipi : <strong id="pv-paytype">-</strong></div>
+          <div class="field">İşlem Tipi : <strong id="pv-islemtipi">-</strong></div>
+          <div class="controls"><button id="confirmBtn" class="btn primary">Onayla</button><button id="cancelPreview" class="btn ghost">İptal</button></div>
+        </div>
+        <div id="list"></div>
+        <div class="spaced"><button id="clearAll" class="btn ghost">Tümünü Sil</button><button id="toggleAuto" class="btn ghost">Otomatik İndir: Kapalı</button></div>
+      </div>
+    </div>
+    <script>
+     // ELEMENTLER
+const priceInput = document.getElementById('price');
+const operationInput = document.getElementById('operation');
+const nakitBtn = document.getElementById('nakitBtn');
+const havaleBtn = document.getElementById('havaleBtn');
+const previewBtn = document.getElementById('previewBtn');
+const previewArea = document.getElementById('previewArea');
+const pvOperation = document.getElementById('pv-operation');
+const pvPrice = document.getElementById('pv-price');
+const pvPaytype = document.getElementById('pv-paytype');
+const pvIslemtipi = document.getElementById('pv-islemtipi');
+const confirmBtn = document.getElementById('confirmBtn');
+const cancelPreview = document.getElementById('cancelPreview');
+const listDiv = document.getElementById('list');
+const exportBtn = document.getElementById('exportBtn');
+const clearAll = document.getElementById('clearAll');
+const toggleAuto = document.getElementById('toggleAuto');
+const alisBtn = document.getElementById('alisBtn');
+const satisBtn = document.getElementById('satisBtn');
+let payType = 'Nakit';
+let islemTipi = 'Alış';
+let autoDownload = false;
+
+nakitBtn.addEventListener('click', () => setPay('Nakit'));
+havaleBtn.addEventListener('click', () => setPay('Havale'));
+alisBtn.addEventListener('click', () => setIslem('Alış'));
+satisBtn.addEventListener('click', () => setIslem('Satış'));
+
+function setPay(t) {
+  payType = t;
+  nakitBtn.classList.toggle('active', t === 'Nakit');
+  havaleBtn.classList.toggle('active', t === 'Havale');
+}
+
+function setIslem(tip) {
+  islemTipi = tip;
+  alisBtn.classList.toggle('active', tip === 'Alış');
+  satisBtn.classList.toggle('active', tip === 'Satış');
+}
+
+previewBtn.addEventListener('click', () => {
+  const price = priceInput.value.trim();
+  const op = operationInput.value.trim();
+  if (!price || !op) {
+    alert('Lütfen hem tutar hem de işlem alanını doldur.');
+    return;
+  }
+  pvOperation.textContent = op;
+  pvPrice.textContent = numberWithSeparator(price);
+  pvPaytype.textContent = payType;
+  pvIslemtipi.textContent = islemTipi;
+  previewArea.style.display = 'block';
+});
+
+cancelPreview.addEventListener('click', () => {
+  previewArea.style.display = 'none';
+});
+
+confirmBtn.addEventListener('click', () => {
+  const price = priceInput.value.trim();
+  const op = operationInput.value.trim();
+  const now = new Date();
+  const ts = formatDate(now);
+  const entry = {
+    id: 'id' + Date.now(),
+    isDone: false,
+    operation: op,
+    price: Number(price),
+    payType,
+    islemTipi,
+    time: ts
+  };
+  saveEntry(entry);
+  previewArea.style.display = 'none';
+  priceInput.value = '';
+  operationInput.value = '';
+  setPay('Nakit');
+  setIslem('Alış');
+  renderList();
+  if (autoDownload) {
+    downloadJSON();
+  }
+});
+
+exportBtn.addEventListener('click', () => {
+  downloadJSON(true);
+});
+
+toggleAuto.addEventListener('click', () => {
+  autoDownload = !autoDownload;
+  toggleAuto.textContent = 'Otomatik İndir: ' + (autoDownload ? 'Açık' : 'Kapalı');
+});
+
+clearAll.addEventListener('click', () => {
+  if (confirm('Tüm kayıtları silmek istiyor musun?')) {
+    localStorage.removeItem('goldEntries');
+    renderList();
+  }
+});
+
+function numberWithSeparator(x) {
+  return String(x).replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+}
+
+function formatDate(d) {
+  const dd = String(d.getDate()).padStart(2, '0');
+  const mm = String(d.getMonth() + 1).padStart(2, '0');
+  const yyyy = d.getFullYear();
+  const hh = String(d.getHours()).padStart(2, '0');
+  const min = String(d.getMinutes()).padStart(2, '0');
+  return `${dd}.${mm}.${yyyy} ${hh}:${min}`;
+}
+
+function getEntries() {
+  try {
+    return JSON.parse(localStorage.getItem('goldEntries') || '[]');
+  } catch (e) {
+    return [];
+  }
+}
+
+function saveEntry(e) {
+  const arr = getEntries();
+  arr.unshift(e);
+  localStorage.setItem('goldEntries', JSON.stringify(arr));
+}
+
+function updateEntry(updated) {
+  const arr = getEntries().map(x => x.id === updated.id ? updated : x);
+  localStorage.setItem('goldEntries', JSON.stringify(arr));
+}
+
+function renderList() {
+  listDiv.innerHTML = '';
+  const arr = getEntries();
+  if (arr.length === 0) {
+    listDiv.innerHTML = '<div class="meta">Henüz kayıt yok.</div>';
+    return;
+  }
+  arr.forEach(item => {
+    const card = document.createElement('div');
+    card.className = 'entry-card';
+    if (!item.isDone) {
+      card.classList.add('pending');
+    } else {
+      card.classList.remove('pending');
+    }
+    const op = document.createElement('div');
+    op.className = 'field';
+    op.innerHTML = `İşlem : <strong>${escapeHtml(item.operation)}</strong>`;
+    const pr = document.createElement('div');
+    pr.className = 'field';
+    pr.innerHTML = `Tutar : <strong>${numberWithSeparator(item.price)}</strong>`;
+    const pt = document.createElement('div');
+    pt.className = 'field';
+    pt.innerHTML = `Ödeme Tipi : <strong>${escapeHtml(item.payType)}</strong>`;
+    const it = document.createElement('div');
+    it.className = 'field';
+    it.innerHTML = `İşlem Tipi : <strong>${escapeHtml(item.islemTipi || '-')}</strong>`;
+    const time = document.createElement('div');
+    time.className = 'meta';
+    time.textContent = 'İşlem saati : ' + item.time;
+    const controls = document.createElement('div');
+    controls.className = 'controls';
+    const doneBtn = document.createElement('button');
+    doneBtn.className = 'btn ghost';
+    doneBtn.textContent = 'İşlendi';
+    doneBtn.addEventListener('click', () => {
+      item.isDone = !item.isDone;
+      updateEntry(item);
+      renderList();
+    });
+    const delBtn = document.createElement('button');
+    delBtn.className = 'btn ghost';
+    delBtn.textContent = 'Sil';
+    delBtn.addEventListener('click', () => {
+      if (confirm('Bu kaydı sil?')) {
+        const newArr = getEntries().filter(x => x.id !== item.id);
+        localStorage.setItem('goldEntries', JSON.stringify(newArr));
+        renderList();
+      }
+    });
+    controls.appendChild(doneBtn);
+    controls.appendChild(delBtn);
+    if (item.isDone) {
+      card.classList.remove('pending');
+      card.classList.add('strike');
+    }
+    card.appendChild(op);
+    card.appendChild(pr);
+    card.appendChild(pt);
+    card.appendChild(it);
+    card.appendChild(time);
+    card.appendChild(controls);
+    listDiv.appendChild(card);
+  });
+}
+
+function escapeHtml(unsafe) {
+  return unsafe.replace(/[&<>"']/g, function(m) {
+    return {
+      '&': '&amp;',
+      '<': '&lt;',
+      '>': '&gt;',
+      '"': '&quot;',
+      "'": '&#039;'
+    }[m];
+  });
+}
+
+function downloadJSON(forceAll = false) {
+  const arr = getEntries();
+  if (!forceAll && arr.length === 0) {
+    alert('Kayıt yok');
+    return;
+  }
+  const blob = new Blob([JSON.stringify(arr, null, 2)], {
+    type: 'application/json'
+  });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `altin_kayit_${new Date().toISOString().slice(0,19).replace(/[:T]/g,'-')}.json`;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  URL.revokeObjectURL(url);
+}
+
+// Klavye navigasyonu için durum takibi
+let step = 0; // 0=price, 1=operation, 2=paytype, 3=islemTipi, 4=preview, 5=confirm
+
+priceInput.addEventListener('keydown', (e) => {
+  if (e.key === 'Enter') {
+    e.preventDefault();
+    operationInput.focus();
+    step = 1;
+  }
+});
+
+operationInput.addEventListener('keydown', (e) => {
+  if (e.key === 'Enter') {
+    e.preventDefault();
+    nakitBtn.focus();
+    step = 2;
+  }
+});
+
+// Ödeme tipi butonları için klavye navigasyonu
+const payButtons = [nakitBtn, havaleBtn];
+payButtons.forEach((btn, idx) => {
+  btn.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') {
+      e.preventDefault();
+      const nextIdx = (e.key === 'ArrowRight') ? (idx + 1) % payButtons.length : (idx - 1 + payButtons.length) % payButtons.length;
+      payButtons[nextIdx].focus();
+    }
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      setPay(btn.textContent);
+      alisBtn.focus();
+      step = 3;
+    }
+  });
+});
+
+// İşlem tipi butonları için klavye navigasyonu
+const islemButtons = [alisBtn, satisBtn];
+islemButtons.forEach((btn, idx) => {
+  btn.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') {
+      e.preventDefault();
+      const nextIdx = (e.key === 'ArrowRight') ? (idx + 1) % islemButtons.length : (idx - 1 + islemButtons.length) % islemButtons.length;
+      islemButtons[nextIdx].focus();
+    }
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      setIslem(btn.textContent);
+      previewBtn.focus();
+      step = 4;
+    }
+  });
+});
+
+// Görüntüle butonu Enter ile çalışsın
+previewBtn.addEventListener('keydown', (e) => {
+  if (e.key === 'Enter') {
+    e.preventDefault();
+    previewBtn.click();
+    if (previewArea.style.display === 'block') {
+      confirmBtn.focus();
+      step = 5;
+    }
+  }
+});
+
+// Onayla butonu Enter ile çalışsın
+confirmBtn.addEventListener('keydown', (e) => {
+  if (e.key === 'Enter') {
+    e.preventDefault();
+    confirmBtn.click();
+    priceInput.focus();
+    step = 0;
+  }
+});
+
+// Başlangıçta listeyi göster
+renderList();
+
+
+    </script>
+  </body>
+</html>
