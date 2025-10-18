@@ -1,0 +1,243 @@
+<!doctype html>
+<html lang="tr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Kuyumcu Kasa - Hızlı Giriş (Güncel)</title>
+  <style>
+    :root{--accent:#1f7a8c;--bg:#0f1720;--card:#0b1220;--muted:#9aa4ad}
+    html,body{height:100%;margin:0;font-family:Inter,Segoe UI,Helvetica,Arial,sans-serif;background:linear-gradient(180deg,#071122 0%, #06101a 100%);color:#e6eef3}
+    .app{max-width:480px;margin:0 auto;padding:14px}
+    header{display:flex;gap:8px;align-items:center}
+    h1{font-size:18px;margin:0}
+    .card{background:linear-gradient(180deg,rgba(255,255,255,0.02),rgba(255,255,255,0.01));padding:12px;border-radius:12px;box-shadow:0 6px 20px rgba(2,6,23,0.6)}
+    .row{display:flex;gap:8px}
+    .btn{flex:1;padding:12px;border-radius:10px;border:0;font-size:16px;cursor:pointer}
+    .btn-outline{background:transparent;border:1px solid rgba(255,255,255,0.06)}
+    .btn-primary{background:var(--accent);color:white}
+    .controls{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}
+    input[type=text],input[type=number],select{width:100%;padding:10px;border-radius:10px;border:0;background:rgba(255,255,255,0.03);color:inherit;font-size:16px}
+    .big{font-size:20px;padding:14px}
+    .small{font-size:13px;padding:8px}
+    .quicks{display:flex;gap:8px;overflow:auto;padding-top:8px}
+    .chip{white-space:nowrap;padding:8px 12px;border-radius:999px;background:rgba(255,255,255,0.03);cursor:pointer}
+    footer{margin-top:12px;display:flex;gap:8px}
+    ul.log{list-style:none;padding:0;margin:10px 0 0 0;max-height:220px;overflow:auto}
+    ul.log li{padding:8px;border-radius:8px;background:rgba(255,255,255,0.02);margin-bottom:8px;display:flex;justify-content:space-between;align-items:center}
+    .muted{color:var(--muted);font-size:13px}
+    .small-btn{padding:6px 8px;border-radius:8px;border:0}
+    .top-row{display:flex;gap:8px;align-items:center}
+    .preset-row{display:flex;gap:6px;margin-top:8px}
+    .pres{flex:1;padding:10px;border-radius:8px;border:0;background:rgba(255,255,255,0.03);font-size:15px}
+    .export{background:transparent;border:1px dashed rgba(255,255,255,0.06);padding:8px;border-radius:8px}
+    label.m{display:block;margin-bottom:6px;color:var(--muted);font-size:13px}
+    @media (max-width:420px){.app{padding:10px}}
+  </style>
+</head>
+<body>
+  <div class="app">
+    <header class="top-row">
+      <div style="flex:1">
+        <h1>Kuyumcu Kasa — Hızlı Giriş (Güncel)</h1>
+        <div class="muted">Nakit + Havale ayrı ayrı girilebilir. Ürün listesi stok gibi hazırlandı.</div>
+      </div>
+      <button id="exportBtn" class="small-btn export">CSV Dışa Aktar</button>
+    </header>
+
+    <section class="card" style="margin-top:12px">
+      <div>
+        <label class="m">Ürün</label>
+        <select id="productSelect">
+          <!-- stok ürünleri -->
+          <option value="0.5g 22 AYAR">0.5g 22 AYAR</option>
+          <option value="0.5g 24 AYAR">0.5g 24 AYAR</option>
+          <option value="1g 22 AYAR">1g 22 AYAR</option>
+          <option value="1g 24 AYAR">1g 24 AYAR</option>
+          <option value="5g">5 gr</option>
+          <option value="10g">10 gr</option>
+          <option value="20g">20 gr</option>
+          <option value="50g">50 gr</option>
+          <option value="100g">100 gr</option>
+          <option value="Yeni Çeyrek">Yeni Çeyrek</option>
+          <option value="Yeni Yarım">Yeni Yarım</option>
+          <option value="Yeni Tam">Yeni Tam</option>
+          <option value="Eski Çeyrek">Eski Çeyrek</option>
+          <option value="Eski Yarım">Eski Yarım</option>
+          <option value="Eski Tam">Eski Tam</option>
+          <option value="Ata">Ata</option>
+        </select>
+      </div>
+
+      <div class="controls" style="margin-top:10px">
+        <div>
+          <label class="m">İşlem</label>
+          <div style="display:flex;gap:8px">
+            <button id="islemAlis" class="btn btn-outline">Alış</button>
+            <button id="islemSatis" class="btn btn-outline">Satış</button>
+          </div>
+        </div>
+
+        <div>
+          <label class="m">Miktar / Adet</label>
+          <input id="qty" type="number" step="0.01" value="1">
+        </div>
+
+        <div>
+          <label class="m">Nakit (TL)</label>
+          <input id="cash" type="number" step="0.01" value="0">
+        </div>
+
+        <div>
+          <label class="m">Havale / EFT (TL)</label>
+          <input id="transfer" type="number" step="0.01" value="0">
+        </div>
+      </div>
+
+      <div style="display:flex;gap:8px;margin-top:10px">
+        <div style="flex:1">
+          <label class="m">Tutar (manuel opsiyon) — toplam otomatik hesaplanır</label>
+          <input id="manualTotal" type="number" step="0.01" value="0">
+        </div>
+        <div style="width:110px;display:flex;flex-direction:column;gap:8px;justify-content:flex-end">
+          <div class="muted" style="text-align:center">Toplam</div>
+          <div id="totalBox" class="big" style="text-align:center;background:rgba(255,255,255,0.02);padding:10px;border-radius:8px">0 TL</div>
+        </div>
+      </div>
+
+      <div style="display:flex;gap:8px;margin-top:10px">
+        <button id="saveBtn" class="btn btn-primary big">Kaydet (Hızlı)</button>
+        <button id="quickSale" class="btn btn-outline small">Hızlı Satış</button>
+      </div>
+
+      <div class="preset-row" style="margin-top:10px">
+        <button class="pres" data-qty="0.25" onclick="document.getElementById('qty').value=0.25">0.25 gr</button>
+        <button class="pres" data-qty="0.5" onclick="document.getElementById('qty').value=0.5">0.5 gr</button>
+        <button class="pres" data-qty="1" onclick="document.getElementById('qty').value=1">1 gr</button>
+        <button class="pres" data-qty="5" onclick="document.getElementById('qty').value=5">5 gr</button>
+      </div>
+
+    </section>
+
+    <section class="card" style="margin-top:12px">
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <div><strong>Son İşlemler</strong><div class="muted">(Düzenle / Sil)</div></div>
+        <div class="muted" id="count">0 kayıt</div>
+      </div>
+      <ul class="log" id="log"></ul>
+      <div style="display:flex;gap:8px;margin-top:8px">
+        <input id="presetName" placeholder="Kısa Buton Adı (örn: 22 AYAR)" class="small" style="flex:1">
+        <button id="addPreset" class="small-btn">Buton Ekle</button>
+      </div>
+    </section>
+
+    <div style="height:40px"></div>
+  </div>
+
+  <script>
+    const productSelect = document.getElementById('productSelect');
+    const qty = document.getElementById('qty');
+    const cash = document.getElementById('cash');
+    const transfer = document.getElementById('transfer');
+    const manualTotal = document.getElementById('manualTotal');
+    const totalBox = document.getElementById('totalBox');
+    const saveBtn = document.getElementById('saveBtn');
+    const islemAlis = document.getElementById('islemAlis');
+    const islemSatis = document.getElementById('islemSatis');
+    const logEl = document.getElementById('log');
+    const countEl = document.getElementById('count');
+    const exportBtn = document.getElementById('exportBtn');
+    const addPreset = document.getElementById('addPreset');
+    const presetName = document.getElementById('presetName');
+
+    let state = {
+      islem: 'Satış',
+      transactions: JSON.parse(localStorage.getItem('kasa_tx')||'[]'),
+      presets: JSON.parse(localStorage.getItem('kasa_presets')||'[]')
+    };
+
+    function saveState(){
+      localStorage.setItem('kasa_tx', JSON.stringify(state.transactions));
+      localStorage.setItem('kasa_presets', JSON.stringify(state.presets));
+    }
+
+    function updateButtons(){
+      [islemAlis,islemSatis].forEach(b=>b.className='btn btn-outline');
+      if(state.islem==='Alış') islemAlis.className='btn btn-primary'; else islemSatis.className='btn btn-primary';
+    }
+
+    islemAlis.onclick = ()=>{ state.islem='Alış'; updateButtons(); }
+    islemSatis.onclick = ()=>{ state.islem='Satış'; updateButtons(); }
+
+    function calcTotal(){
+      const c = parseFloat(cash.value)||0; const t = parseFloat(transfer.value)||0; const m = parseFloat(manualTotal.value)||0;
+      const sum = c + t + (m>0?0:0); // manualTotal is optional override handled below
+      const total = (m>0)? m : sum;
+      totalBox.textContent = total.toFixed(2) + ' TL';
+      return {cash:c, transfer:t, manual:m, total};
+    }
+
+    [cash,transfer,manualTotal].forEach(el=>el.addEventListener('input', calcTotal));
+
+    function render(){
+      logEl.innerHTML = '';
+      state.transactions.slice().reverse().slice(0,100).forEach((t, idx)=>{
+        const li = document.createElement('li');
+        const left = document.createElement('div');
+        left.innerHTML = `<div><strong>${t.product}</strong> <span class=muted>(${t.islem} • ${t.qty} adet)</span></div><div class=muted>Toplam: ${t.total} TL — Nakit: ${t.cash} TL • Havale: ${t.transfer} TL • ${new Date(t.time).toLocaleString()}</div>`;
+        const right = document.createElement('div');
+        const del = document.createElement('button'); del.textContent='Sil'; del.className='small-btn'; del.onclick=()=>{ if(confirm('Silinsin mi?')){ state.transactions.splice(state.transactions.indexOf(t),1); saveState(); render(); } };
+        const edit = document.createElement('button'); edit.textContent='Düzenle'; edit.className='small-btn'; edit.onclick=()=>{ productSelect.value=t.product; qty.value=t.qty; cash.value=t.cash; transfer.value=t.transfer; manualTotal.value=t.manual; state.islem=t.islem; updateButtons(); calcTotal(); }
+        right.appendChild(edit); right.appendChild(del);
+        li.appendChild(left); li.appendChild(right);
+        logEl.appendChild(li);
+      });
+      countEl.textContent = state.transactions.length+' kayıt';
+    }
+
+    function flash(msg){
+      const el = document.createElement('div'); el.textContent=msg; el.style= 'position:fixed;left:50%;transform:translateX(-50%);bottom:30px;background:rgba(0,0,0,0.7);padding:10px 14px;border-radius:8px'; document.body.appendChild(el); setTimeout(()=>el.remove(),1100);
+    }
+
+    function saveEntry(){
+      const p = productSelect.value || '-';
+      const q = parseFloat(qty.value)||1;
+      const c = parseFloat(cash.value)||0;
+      const tr = parseFloat(transfer.value)||0;
+      const m = parseFloat(manualTotal.value)||0;
+      const total = (m>0)? m : (c + tr);
+      const t = { product:p, qty:q, cash:c, transfer:tr, manual:m, total: parseFloat(total.toFixed(2)), islem: state.islem, time: Date.now() };
+      state.transactions.push(t);
+      saveState(); render(); flash('Kaydedildi!');
+      // temizle tutarlar ama ürünü bırak
+      cash.value = 0; transfer.value = 0; manualTotal.value = 0; calcTotal();
+    }
+
+    saveBtn.onclick = saveEntry;
+    document.getElementById('quickSale').onclick = ()=>{ if(!productSelect.value) productSelect.value='1g 22 AYAR'; if(!qty.value) qty.value=1; if(!cash.value && !transfer.value) cash.value=0; saveEntry(); }
+
+    exportBtn.onclick = ()=>{
+      if(!state.transactions.length){ alert('Kayıt yok'); return; }
+      const csv = ['Zaman,Ürün,İşlem,Miktar,Nakit,Havale,ManualToplam,Toplam'].concat(state.transactions.map(t=>`${new Date(t.time).toISOString()},"${t.product}",${t.islem},${t.qty},${t.cash},${t.transfer},${t.manual},${t.total}`)).join('\n');
+      const blob = new Blob([csv],{type:'text/csv'});
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a'); a.href = url; a.download = 'kasa_kayitlari.csv'; a.click(); URL.revokeObjectURL(url);
+    }
+
+    addPreset.onclick = ()=>{
+      const label = presetName.value.trim(); if(!label){ alert('Buton adı gir'); return; }
+      state.presets.unshift({label,product:productSelect.value,qty:parseFloat(qty.value)||1}); state.presets=state.presets.slice(0,12); presetName.value=''; saveState(); renderPresets(); flash('Buton eklendi');
+    }
+
+    function renderPresets(){
+      // basit: presetler log üstünde küçük butonlar eklenebilir
+      // şimdilik localStorage korunuyor, UI basit tutuldu
+    }
+
+    // init
+    updateButtons(); render(); calcTotal();
+
+    // enter tuşu kaydet
+    document.addEventListener('keydown', (e)=>{ if(e.key==='Enter') saveEntry(); });
+  </script>
+</body>
+</html>
